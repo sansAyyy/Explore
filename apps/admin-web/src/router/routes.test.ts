@@ -100,4 +100,23 @@ describe('routes', () => {
 
     expect(profileRoute?.meta?.pagePermission).toBeUndefined()
   })
+
+  it('registers a hidden authenticated site messages route outside the left menu', () => {
+    const shellRoute = routes.find((route) => route.path === '/')
+    const messageRoute = shellRoute?.children?.find((route) => route.path === 'message')
+    const siteMessagesRoute = messageRoute?.children?.find((route) => route.name === 'site-messages')
+
+    expect(siteMessagesRoute).toEqual(
+      expect.objectContaining({
+        path: 'site-messages',
+        meta: expect.objectContaining({
+          requiresAuth: true,
+          title: '站内信',
+          hideInMenu: true,
+        }),
+      }),
+    )
+
+    expect(siteMessagesRoute?.meta?.pagePermission).toBeUndefined()
+  })
 })

@@ -1,26 +1,24 @@
 <script setup lang="ts">
 import { ArrowDown, Bell, Expand, Fold, Menu, SwitchButton, UserFilled } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
 
 defineProps<{
   collapsed: boolean
   displayName: string
+  hasUnreadMessages: boolean
   isLoggingOut: boolean
   isSyncingSession: boolean
   pageTitle: string
   roleLabel: string
+  unreadMessagesBadgeValue: string
 }>()
 
 defineEmits<{
   logout: []
   'navigate-profile': []
+  'open-inbox-preview': []
   'open-sidebar': []
   'toggle-sidebar': []
 }>()
-
-function handleInboxClick() {
-  ElMessage.info('站内信功能即将上线')
-}
 </script>
 
 <template>
@@ -47,12 +45,17 @@ function handleInboxClick() {
     </div>
 
     <div class="admin-topbar__actions">
-      <el-badge is-dot class="admin-topbar__notice-badge">
+      <el-badge
+        :hidden="!hasUnreadMessages"
+        :value="unreadMessagesBadgeValue"
+        class="admin-topbar__notice-badge"
+        type="danger"
+      >
         <el-button
           :icon="Bell"
           circle
           class="admin-topbar__notice-trigger"
-          @click="handleInboxClick"
+          @click="$emit('open-inbox-preview')"
         />
       </el-badge>
 
@@ -168,9 +171,9 @@ function handleInboxClick() {
   gap: 12px;
 }
 
-.admin-topbar__notice-badge :deep(.el-badge__content.is-fixed.is-dot) {
-  top: 8px;
-  right: 8px;
+.admin-topbar__notice-badge :deep(.el-badge__content.is-fixed) {
+  top: 2px;
+  right: 2px;
 }
 
 .admin-topbar__account-trigger {

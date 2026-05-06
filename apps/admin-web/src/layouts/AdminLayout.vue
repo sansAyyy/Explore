@@ -1,20 +1,23 @@
 <script setup lang="ts">
 import { ElMessage } from 'element-plus'
 import type { RouteRecordRaw } from 'vue-router'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
+import SiteMessagesPreviewDrawer from '@/features/site-messages/components/drawers/SiteMessagesPreviewDrawer.vue'
 import AdminSidebar from '@/layouts/admin-layout/AdminSidebar.vue'
 import AdminTopbar from '@/layouts/admin-layout/AdminTopbar.vue'
-import { useRouteLoading } from '@/router/loading'
 import { useAdminLayout } from '@/layouts/admin-layout/useAdminLayout'
+import { useRouteLoading } from '@/router/loading'
 import {
   buildAdminNavigationFromRoutes,
   buildVisibleAdminNavigation,
 } from '@/shared/constants/navigation'
 import { useAuthStore } from '@/stores/auth'
+import { useSiteMessagesStore } from '@/stores/siteMessages'
 
 const authStore = useAuthStore()
+const siteMessagesStore = useSiteMessagesStore()
 const route = useRoute()
 const router = useRouter()
 const isLoggingOut = ref(false)
@@ -42,11 +45,29 @@ const isSyncingSession = computed(
 )
 const { isRouteNavigating } = useRouteLoading()
 
+watch(
+  () => [authStore.isAuthenticated, authStore.isBootstrappingSession] as const,
+  ([isAuthenticated, isBootstrappingSession]) => {
+    if (!isAuthenticated) {
+      siteMessagesStore.clear()
+      return
+    }
+
+    if (!isBootstrappingSession) {
+      void siteMessagesStore.refreshUnreadCount({ silent: true })
+    }
+  },
+  {
+    immediate: true,
+  },
+)
+
 async function handleLogout() {
   isLoggingOut.value = true
 
   try {
     await authStore.logout()
+    siteMessagesStore.clear()
     closeMobileSidebar()
     await router.replace('/login')
     ElMessage.success('已退出登录')
@@ -58,6 +79,31 @@ async function handleLogout() {
 async function handleNavigateProfile() {
   closeMobileSidebar()
   await router.push({ name: 'profile' })
+}
+
+async function handleOpenInboxPreview() {
+  await siteMessagesStore.openPreviewDrawer()
+}
+
+async function handlePreviewMarkAllRead() {
+    await siteMessagesStore.markAllRead()
+}
+
+async function handleViewAllSiteMessages() {
+  siteMessagesStore.closePreviewDrawer()
+  await router.push({
+    name: 'site-messages',
+  })
+}
+
+async function handleOpenSiteMessage(messageId: string) {
+  siteMessagesStore.closePreviewDrawer()
+  await router.push({
+    name: 'site-messages',
+    query: {
+      messageId,
+    },
+  })
 }
 
 function handleNavigate() {
@@ -102,12 +148,15 @@ function handleNavigate() {
       <AdminTopbar
         :collapsed="isSidebarCollapsed"
         :display-name="displayName"
+        :has-unread-messages="siteMessagesStore.hasUnread"
         :is-logging-out="isLoggingOut"
         :is-syncing-session="isSyncingSession"
         :page-title="pageTitle"
         :role-label="roleLabel"
+        :unread-messages-badge-value="siteMessagesStore.unreadCountBadgeValue"
         @logout="handleLogout"
         @navigate-profile="handleNavigateProfile"
+        @open-inbox-preview="handleOpenInboxPreview"
         @open-sidebar="openMobileSidebar"
         @toggle-sidebar="toggleSidebarCollapsed"
       />
@@ -124,6 +173,24 @@ function handleNavigate() {
         </div>
       </main>
     </div>
+
+    <SiteMessagesPreviewDrawer
+      :is-loading="siteMessagesStore.isPreviewLoading"
+      :is-marking-all-read="siteMessagesStore.isMarkingAllRead"
+      :items="siteMessagesStore.previewItems"
+      :model-value="siteMessagesStore.isPreviewDrawerOpen"
+      :unread-count="siteMessagesStore.unreadCount"
+      @mark-all-read="handlePreviewMarkAllRead"
+      @open-message="handleOpenSiteMessage($event.id)"
+      @update:model-value="
+        (value) => {
+          if (!value) {
+            siteMessagesStore.closePreviewDrawer()
+          }
+        }
+      "
+      @view-all="handleViewAllSiteMessages"
+    />
   </div>
 </template>
 

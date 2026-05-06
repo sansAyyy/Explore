@@ -61,7 +61,7 @@ Content-Type: application/json
 }
 
 ### List site messages
-GET {{Explore.MessageCenterService.Api_HostAddress}}/api/site-messages?userId={{recipientUserId}}&pageIndex=1&pageSize=10
+GET {{Explore.MessageCenterService.Api_HostAddress}}/api/site-messages?pageIndex=1&pageSize=10
 Accept: application/json
 
 ### Get site message
@@ -72,4 +72,4 @@ Accept: application/json
 PUT {{Explore.MessageCenterService.Api_HostAddress}}/api/site-messages/{{siteMessageId}}/read
 
 ### Mark all site messages as read
-PUT {{Explore.MessageCenterService.Api_HostAddress}}/api/site-messages/read-all?userId={{recipientUserId}}
+PUT {{Explore.MessageCenterService.Api_HostAddress}}/api/site-messages/read-all

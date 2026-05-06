@@ -14,9 +14,9 @@ public sealed class SiteMessageCommandRepository : ISiteMessageCommandRepository
         _dbContext = dbContext;
     }
 
-    public Task<SiteMessage?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public Task<SiteMessage?> GetByIdAsync(Guid id, Guid userId, CancellationToken cancellationToken)
     {
-        return _dbContext.SiteMessages.SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
+        return _dbContext.SiteMessages.SingleOrDefaultAsync(x => x.Id == id && x.UserId == userId, cancellationToken);
     }
 
     public async Task<IReadOnlyCollection<SiteMessage>> GetUnreadByUserIdAsync(Guid userId, CancellationToken cancellationToken)

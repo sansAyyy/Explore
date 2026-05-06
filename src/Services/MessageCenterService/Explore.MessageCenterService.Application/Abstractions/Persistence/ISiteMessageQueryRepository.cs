@@ -7,9 +7,10 @@ namespace Explore.MessageCenterService.Application.Abstractions.Persistence;
 public interface ISiteMessageQueryRepository
 {
     Task<PagedResult<SiteMessageBasicResponse>> GetPagedAsync(
+        Guid userId,
         GetPagedSiteMessagesRequest request,
         CancellationToken cancellationToken);
 
-    Task<SiteMessageDetailResponse?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<SiteMessageDetailResponse?> GetByIdAsync(Guid id, Guid userId, CancellationToken cancellationToken);
 }
 

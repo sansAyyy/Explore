@@ -9,11 +9,6 @@ internal static class SiteMessageRequestValidator
 
     public static Error? Validate(GetPagedSiteMessagesRequest request)
     {
-        if (request.UserId == Guid.Empty)
-        {
-            return Error.Validation("UserId is required.");
-        }
-
         if (request.PageIndex <= 0)
         {
             return Error.Validation("PageIndex must be greater than 0.");

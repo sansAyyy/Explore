@@ -41,9 +41,9 @@ public sealed class SiteMessagesController : ControllerBase
     }
 
     [HttpPut("read-all")]
-    public async Task<IActionResult> MarkAllReadAsync([FromQuery] Guid userId, CancellationToken cancellationToken)
+    public async Task<IActionResult> MarkAllReadAsync(CancellationToken cancellationToken)
     {
-        var result = await _siteMessageAppService.MarkAllReadAsync(userId, cancellationToken);
+        var result = await _siteMessageAppService.MarkAllReadAsync(cancellationToken);
         return this.ToActionResult(result, NoContent);
     }
 }

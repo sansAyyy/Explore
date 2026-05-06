@@ -15,6 +15,6 @@ public interface ISiteMessageAppService
 
     Task<Result> MarkReadAsync(Guid id, CancellationToken cancellationToken);
 
-    Task<Result> MarkAllReadAsync(Guid userId, CancellationToken cancellationToken);
+    Task<Result> MarkAllReadAsync(CancellationToken cancellationToken);
 }
 

@@ -165,6 +165,16 @@ export const routes: RouteRecordRaw[] = [
               menuOrder: 10,
             },
           },
+          {
+            path: 'site-messages',
+            name: 'site-messages',
+            component: () => import('@/features/site-messages/pages/SiteMessagesPage.vue'),
+            meta: {
+              requiresAuth: true,
+              title: '站内信',
+              hideInMenu: true,
+            },
+          },
         ],
       },
     ],

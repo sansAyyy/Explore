@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\BuildingBlocks\BuildingBlocks.Common\BuildingBlocks.Common\BuildingBlocks.Common.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\BuildingBlocks.CurrentUser\BuildingBlocks.CurrentUser.Abstractions\BuildingBlocks.CurrentUser.Abstractions.csproj" />
     <ProjectReference Include="..\..\..\BuildingBlocks\BuildingBlocks.DependencyInjection\BuildingBlocks.DependencyInjection.Abstractions\BuildingBlocks.DependencyInjection.Abstractions.csproj" />
     <ProjectReference Include="..\Explore.MessageCenterService.Domain\Explore.MessageCenterService.Domain.csproj" />
   </ItemGroup>

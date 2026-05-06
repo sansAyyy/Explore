@@ -17,12 +17,13 @@ public sealed class SiteMessageQueryRepository : ISiteMessageQueryRepository, IS
     }
 
     public async Task<PagedResult<SiteMessageBasicResponse>> GetPagedAsync(
+        Guid userId,
         GetPagedSiteMessagesRequest request,
         CancellationToken cancellationToken)
     {
         var query = _dbContext.SiteMessages
             .AsNoTracking()
-            .Where(x => x.UserId == request.UserId);
+            .Where(x => x.UserId == userId);
 
         if (request.IsRead.HasValue)
         {
@@ -47,11 +48,11 @@ public sealed class SiteMessageQueryRepository : ISiteMessageQueryRepository, IS
         return new PagedResult<SiteMessageBasicResponse>(totalCount, items);
     }
 
-    public Task<SiteMessageDetailResponse?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public Task<SiteMessageDetailResponse?> GetByIdAsync(Guid id, Guid userId, CancellationToken cancellationToken)
     {
         return _dbContext.SiteMessages
             .AsNoTracking()
-            .Where(x => x.Id == id)
+            .Where(x => x.Id == id && x.UserId == userId)
             .Select(x => new SiteMessageDetailResponse(
                 x.Id,
                 x.DispatchId,

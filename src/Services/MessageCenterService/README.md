@@ -13,7 +13,7 @@
 
 - 同步入口：`POST /api/notifications/send`，适合被其他服务通过 HTTP 直接调用。
 - 异步入口：消费 `SendNotificationByTemplateMessage`，并用 `IInboxMessageProcessor` 做幂等处理。
-- 站内信能力：通过 `/api/site-messages` 提供分页查询、详情、单条已读和全部已读接口。
+- 站内信能力：通过 `/api/site-messages` 提供当前登录管理员自己的站内信分页查询、详情、单条已读和全部已读接口。
 - 模板管理：通过 `/api/message-templates` 管理模板及启停状态。
 - 当前通道实现状态：`SiteMessage` 会落库；`Sms` 与 `MiniProgram` 发送器当前返回 placeholder 状态，等待真实 provider 接入。
 
