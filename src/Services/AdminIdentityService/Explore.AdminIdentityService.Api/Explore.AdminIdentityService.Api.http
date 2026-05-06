@@ -1,0 +1,244 @@
+@Explore.AdminIdentityService.Api_HostAddress = http://localhost:5229
+@adminUserId = 8d6d8c59-8ff6-4f59-8be1-5ea27950b1a6
+@adminRoleId = 6f4f73f2-cc59-48be-8501-97c9bcfd6b8b
+@adminPermissionId = 5d6936bb-b2d8-4f6c-bdb4-86342b2e77ea
+@loginAccount = ReplaceWithAdminAccount
+@loginPassword = ReplaceWithActualPassword
+@accessToken = ReplaceWithLoginAccessToken
+@refreshToken = ReplaceWithLoginRefreshToken
+
+### Admin login
+POST {{Explore.AdminIdentityService.Api_HostAddress}}/api/admin-auth/login
+Content-Type: application/json
+
+{
+  "account": "{{loginAccount}}",
+  "password": "{{loginPassword}}"
+}
+
+### Refresh admin token
+POST {{Explore.AdminIdentityService.Api_HostAddress}}/api/admin-auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+### Logout current admin session
+POST {{Explore.AdminIdentityService.Api_HostAddress}}/api/admin-auth/logout
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+### Current admin authorization context
+GET {{Explore.AdminIdentityService.Api_HostAddress}}/api/admin-authorization/current
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Current admin profile
+GET {{Explore.AdminIdentityService.Api_HostAddress}}/api/admin-current-user
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Update current admin profile
+PUT {{Explore.AdminIdentityService.Api_HostAddress}}/api/admin-current-user
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "userName": "bootstrap-admin",
+  "email": "bootstrap-admin@example.test",
+  "displayName": "Bootstrap Admin"
+}
+
+### Change current admin password
+PUT {{Explore.AdminIdentityService.Api_HostAddress}}/api/admin-current-user/password
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "currentPassword": "ReplaceWithCurrentPassword",
+  "newPassword": "ReplaceWithNewPassword"
+}
+
+### List admin users
+GET {{Explore.AdminIdentityService.Api_HostAddress}}/api/admin-users?pageIndex=1&pageSize=10&keyword=super&isActive=true
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Get admin user
+GET {{Explore.AdminIdentityService.Api_HostAddress}}/api/admin-users/{{adminUserId}}
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Create admin user
+POST {{Explore.AdminIdentityService.Api_HostAddress}}/api/admin-users
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "userName": "ops.admin",
+  "email": "ops.admin@example.test",
+  "displayName": "Operations Admin",
+  "password": "ReplaceWithSecurePassword123!",
+  "isActive": true
+}
+
+### Update admin user
+PUT {{Explore.AdminIdentityService.Api_HostAddress}}/api/admin-users/{{adminUserId}}
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "userName": "bootstrap-admin",
+  "email": "bootstrap-admin@example.test",
+  "displayName": "Bootstrap Admin Updated"
+}
+
+### Change admin user password
+PUT {{Explore.AdminIdentityService.Api_HostAddress}}/api/admin-users/{{adminUserId}}/password
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "newPassword": "ReplaceWithAnotherSecurePassword123!"
+}
+
+### Enable admin user
+PUT {{Explore.AdminIdentityService.Api_HostAddress}}/api/admin-users/{{adminUserId}}/enable
+Authorization: Bearer {{accessToken}}
+
+### Disable admin user
+PUT {{Explore.AdminIdentityService.Api_HostAddress}}/api/admin-users/{{adminUserId}}/disable
+Authorization: Bearer {{accessToken}}
+
+### Delete admin user
+DELETE {{Explore.AdminIdentityService.Api_HostAddress}}/api/admin-users/{{adminUserId}}
+Authorization: Bearer {{accessToken}}
+
+### Get admin user roles
+GET {{Explore.AdminIdentityService.Api_HostAddress}}/api/admin-users/{{adminUserId}}/roles
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Assign admin user roles
+PUT {{Explore.AdminIdentityService.Api_HostAddress}}/api/admin-users/{{adminUserId}}/roles
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "roleIds": [
+    "{{adminRoleId}}"
+  ]
+}
+
+### List admin roles
+GET {{Explore.AdminIdentityService.Api_HostAddress}}/api/admin-roles?pageIndex=1&pageSize=10
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Get admin role
+GET {{Explore.AdminIdentityService.Api_HostAddress}}/api/admin-roles/{{adminRoleId}}
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Create admin role
+POST {{Explore.AdminIdentityService.Api_HostAddress}}/api/admin-roles
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "code": "audit_reader",
+  "name": "Audit Reader",
+  "description": "Read-only audit role",
+  "isActive": true
+}
+
+### Update admin role
+PUT {{Explore.AdminIdentityService.Api_HostAddress}}/api/admin-roles/{{adminRoleId}}
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "code": "super_admin",
+  "name": "Super Admin",
+  "description": "System super administrator role"
+}
+
+### Get role permissions
+GET {{Explore.AdminIdentityService.Api_HostAddress}}/api/admin-roles/{{adminRoleId}}/permissions
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Assign role permissions
+PUT {{Explore.AdminIdentityService.Api_HostAddress}}/api/admin-roles/{{adminRoleId}}/permissions
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "permissionIds": [
+    "{{adminPermissionId}}"
+  ]
+}
+
+### Enable admin role
+PUT {{Explore.AdminIdentityService.Api_HostAddress}}/api/admin-roles/{{adminRoleId}}/enable
+Authorization: Bearer {{accessToken}}
+
+### Disable admin role
+PUT {{Explore.AdminIdentityService.Api_HostAddress}}/api/admin-roles/{{adminRoleId}}/disable
+Authorization: Bearer {{accessToken}}
+
+### Delete admin role
+DELETE {{Explore.AdminIdentityService.Api_HostAddress}}/api/admin-roles/{{adminRoleId}}
+Authorization: Bearer {{accessToken}}
+
+### List admin permissions
+GET {{Explore.AdminIdentityService.Api_HostAddress}}/api/admin-permissions?pageIndex=1&pageSize=20
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Get admin permission
+GET {{Explore.AdminIdentityService.Api_HostAddress}}/api/admin-permissions/{{adminPermissionId}}
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Create admin permission
+POST {{Explore.AdminIdentityService.Api_HostAddress}}/api/admin-permissions
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "code": "reports.page",
+  "name": "Reports Page",
+  "description": "Reports page permission",
+  "resourceType": 1,
+  "isActive": true
+}
+
+### Update admin permission
+PUT {{Explore.AdminIdentityService.Api_HostAddress}}/api/admin-permissions/{{adminPermissionId}}
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "code": "dashboard.view",
+  "name": "Dashboard View",
+  "description": "Dashboard page permission",
+  "resourceType": 1
+}
+
+### Enable admin permission
+PUT {{Explore.AdminIdentityService.Api_HostAddress}}/api/admin-permissions/{{adminPermissionId}}/enable
+Authorization: Bearer {{accessToken}}
+
+### Disable admin permission
+PUT {{Explore.AdminIdentityService.Api_HostAddress}}/api/admin-permissions/{{adminPermissionId}}/disable
+Authorization: Bearer {{accessToken}}
+
+### Delete admin permission
+DELETE {{Explore.AdminIdentityService.Api_HostAddress}}/api/admin-permissions/{{adminPermissionId}}
+Authorization: Bearer {{accessToken}}

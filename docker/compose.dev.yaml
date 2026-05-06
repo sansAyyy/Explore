@@ -1,0 +1,184 @@
+# docker compose -f docker/compose.dev.yaml up --build -d {--no-deps} {service-name}
+name: explore-dev
+
+services:
+  edge-proxy:
+    image: explore-caddy-cloudflare:dev
+    build:
+      context: .
+      dockerfile: caddy/Dockerfile
+    depends_on:
+      - admin-web
+      - customer-miniapp
+      - gateway
+    environment:
+      ADMIN_WEB_DOMAIN: ${ADMIN_WEB_DOMAIN:-admin.example.com}
+      CUSTOMER_MINIAPP_DOMAIN: ${CUSTOMER_MINIAPP_DOMAIN:-app.example.com}
+      GATEWAY_DOMAIN: ${GATEWAY_DOMAIN:-api.example.com}
+      CADDY_EMAIL: ${CADDY_EMAIL:-ops@example.com}
+      CLOUDFLARE_API_TOKEN: ${CLOUDFLARE_API_TOKEN:-replace-with-your-cloudflare-api-token}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - explore-dev
+
+  admin-web:
+    image: admin-web:dev
+    build:
+      context: ../apps/admin-web
+      dockerfile: docker/Dockerfile
+      args:
+        VITE_GATEWAY_BASE_URL: ${VITE_GATEWAY_BASE_URL:-https://api.example.com}
+    depends_on:
+      - gateway
+    ports:
+      - "${ADMIN_WEB_PORT:-8080}:80"
+    networks:
+      - explore-dev
+
+  customer-miniapp:
+    image: customer-miniapp:dev
+    build:
+      context: ../apps/customer-miniapp
+      dockerfile: docker/Dockerfile
+      args:
+        VITE_GATEWAY_BASE_URL: ${VITE_GATEWAY_BASE_URL:-https://api.example.com}
+    depends_on:
+      - gateway
+    ports:
+      - "${CUSTOMER_MINIAPP_PORT:-8081}:80"
+    networks:
+      - explore-dev
+
+  gateway:
+    image: explore-gateway:dev
+    build:
+      context: ..
+      dockerfile: src/Gateways/Explore.Gateway.Api/Dockerfile
+    depends_on:
+      - admin-identity-service
+      - customer-account-service
+      - message-center-service
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: "8080"
+      LoggingOptions__Environment: Development
+      Cors__AllowedOrigins__0: ${ADMIN_WEB_PUBLIC_URL:-https://admin.example.com}
+      Cors__AllowedOrigins__1: ${ADMIN_WEB_PUBLIC_URL_Local:-http://localhost:5173}
+      Cors__AllowedOrigins__2: ${CUSTOMER_MINIAPP_PUBLIC_URL:-https://app.example.com}
+      Cors__AllowedOrigins__3: ${CUSTOMER_MINIAPP_PUBLIC_URL_Local:-http://localhost:5174}
+      JwtOptions__Issuer: ${JWT_ISSUER:-Explore}
+      JwtOptions__Audience: ${JWT_AUDIENCE:-Explore.Clients}
+      JwtOptions__SigningKey: ${JWT_SIGNING_KEY:-change-this-local-jwt-signing-key}
+      JwtOptions__AccessTokenExpirationMinutes: "${JWT_ACCESS_TOKEN_EXPIRATION_MINUTES:-120}"
+      JwtOptions__RefreshTokenExpirationDays: "${JWT_REFRESH_TOKEN_EXPIRATION_DAYS:-7}"
+      ReverseProxy__Clusters__admin-identity-cluster__Destinations__destination1__Address: http://admin-identity-service:8080/
+      ReverseProxy__Clusters__customer-account-cluster__Destinations__destination1__Address: http://customer-account-service:8080/
+      ReverseProxy__Clusters__message-center-cluster__Destinations__destination1__Address: http://message-center-service:8080/
+    ports:
+      - "${GATEWAY_PORT:-5001}:8080"
+    networks:
+      - explore-dev
+
+  admin-identity-service:
+    image: explore-admin-identity-service:dev
+    build:
+      context: ..
+      dockerfile: src/Services/AdminIdentityService/Explore.AdminIdentityService.Api/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: "8080"
+      ConnectionStrings__AdminIdentityDatabase: ${ADMIN_IDENTITY_DATABASE_CONNECTION_STRING:-Host=host.docker.internal;Port=5432;Database=explore_admin_identity_dev;Username=postgres;Password=change-this-dev-password}
+      ConnectionStrings__Redis: ${ADMIN_IDENTITY_REDIS_CONNECTION_STRING:-host.docker.internal:6379,password=change-this-dev-password,defaultDatabase=0,prefix=admin_identity_service}
+      RabbitMqOptions__HostName: ${RABBITMQ_HOSTNAME:-host.docker.internal}
+      RabbitMqOptions__Port: "${RABBITMQ_PORT:-5672}"
+      RabbitMqOptions__UserName: ${RABBITMQ_USERNAME:-admin}
+      RabbitMqOptions__Password: ${RABBITMQ_PASSWORD:-change-this-dev-password}
+      RabbitMqOptions__VirtualHost: ${RABBITMQ_VIRTUAL_HOST:-/}
+      MessageCenter__BaseUrl: ${MESSAGE_CENTER_BASE_URL:-http://message-center-service:8080/}
+      MessageCenter__Timeout: ${MESSAGE_CENTER_TIMEOUT:-00:00:10}
+      JwtOptions__Issuer: ${JWT_ISSUER:-Explore}
+      JwtOptions__Audience: ${JWT_AUDIENCE:-Explore.Clients}
+      JwtOptions__SigningKey: ${JWT_SIGNING_KEY:-change-this-local-jwt-signing-key}
+      JwtOptions__AccessTokenExpirationMinutes: "${JWT_ACCESS_TOKEN_EXPIRATION_MINUTES:-120}"
+      JwtOptions__RefreshTokenExpirationDays: "${JWT_REFRESH_TOKEN_EXPIRATION_DAYS:-7}"
+      PhoneVerificationCode__CodeLength: "${PHONE_VERIFICATION_CODE_LENGTH:-6}"
+      PhoneVerificationCode__CodeTtl: ${PHONE_VERIFICATION_CODE_TTL:-00:05:00}
+      PhoneVerificationCode__SendInterval: ${PHONE_VERIFICATION_CODE_SEND_INTERVAL:-00:01:00}
+      PhoneVerificationCode__MaxVerifyAttempts: "${PHONE_VERIFICATION_CODE_MAX_VERIFY_ATTEMPTS:-5}"
+      LoggingOptions__Environment: Development
+    networks:
+      - explore-dev
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  customer-account-service:
+    image: explore-customer-account-service:dev
+    build:
+      context: ..
+      dockerfile: src/Services/CustomerAccountService/Explore.CustomerAccountService.Api/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: "8080"
+      ConnectionStrings__CustomerAccountDatabase: ${CUSTOMER_ACCOUNT_DATABASE_CONNECTION_STRING:-Host=host.docker.internal;Port=5432;Database=explore_customer_account_dev;Username=postgres;Password=change-this-dev-password}
+      ConnectionStrings__Redis: ${CUSTOMER_ACCOUNT_REDIS_CONNECTION_STRING:-host.docker.internal:6379,password=change-this-dev-password,defaultDatabase=0,prefix=customer_account_service}
+      MessageCenter__BaseUrl: ${MESSAGE_CENTER_BASE_URL:-http://message-center-service:8080/}
+      MessageCenter__Timeout: ${MESSAGE_CENTER_TIMEOUT:-00:00:10}
+      JwtOptions__Issuer: ${JWT_ISSUER:-Explore}
+      JwtOptions__Audience: ${JWT_AUDIENCE:-Explore.Clients}
+      JwtOptions__SigningKey: ${JWT_SIGNING_KEY:-change-this-local-jwt-signing-key}
+      JwtOptions__AccessTokenExpirationMinutes: "${CUSTOMER_ACCOUNT_JWT_ACCESS_TOKEN_EXPIRATION_MINUTES:-240}"
+      JwtOptions__RefreshTokenExpirationDays: "${JWT_REFRESH_TOKEN_EXPIRATION_DAYS:-7}"
+      PhoneVerificationCode__CodeLength: "${PHONE_VERIFICATION_CODE_LENGTH:-6}"
+      PhoneVerificationCode__CodeTtl: ${PHONE_VERIFICATION_CODE_TTL:-00:05:00}
+      PhoneVerificationCode__SendInterval: ${PHONE_VERIFICATION_CODE_SEND_INTERVAL:-00:01:00}
+      PhoneVerificationCode__MaxVerifyAttempts: "${PHONE_VERIFICATION_CODE_MAX_VERIFY_ATTEMPTS:-5}"
+      LoggingOptions__Environment: Development
+    networks:
+      - explore-dev
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  message-center-service:
+    image: explore-message-center-service:dev
+    build:
+      context: ..
+      dockerfile: src/Services/MessageCenterService/Explore.MessageCenterService.Api/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: "8080"
+      ConnectionStrings__MessageCenterDatabase: ${MESSAGE_CENTER_DATABASE_CONNECTION_STRING:-Host=host.docker.internal;Port=5432;Database=explore_message_center_dev;Username=postgres;Password=change-this-dev-password}
+      RecipientDirectoryOptions__Mode: ${RECIPIENT_DIRECTORY_MODE:-Http}
+      RecipientDirectoryOptions__BaseUrl: ${RECIPIENT_DIRECTORY_BASE_URL:-http://customer-account-service:8080/}
+      RecipientDirectoryOptions__ProfilePathTemplate: ${RECIPIENT_DIRECTORY_PROFILE_PATH_TEMPLATE:-/api/users/{userId}/notification-profile}
+      RecipientDirectoryOptions__Timeout: ${RECIPIENT_DIRECTORY_TIMEOUT:-00:00:10}
+      RecipientDirectoryOptions__StubProfiles__0__UserId: ${RECIPIENT_DIRECTORY_STUB_PROFILE_0_USER_ID:-11111111-1111-1111-1111-111111111111}
+      RecipientDirectoryOptions__StubProfiles__0__PhoneNumber: ${RECIPIENT_DIRECTORY_STUB_PROFILE_0_PHONE_NUMBER:-13800138000}
+      RecipientDirectoryOptions__StubProfiles__0__MiniProgramOpenId: ${RECIPIENT_DIRECTORY_STUB_PROFILE_0_MINI_PROGRAM_OPEN_ID:-stub-open-id-001}
+      JwtOptions__Issuer: ${JWT_ISSUER:-Explore}
+      JwtOptions__Audience: ${JWT_AUDIENCE:-Explore.Clients}
+      JwtOptions__SigningKey: ${JWT_SIGNING_KEY:-change-this-local-jwt-signing-key}
+      JwtOptions__AccessTokenExpirationMinutes: "${JWT_ACCESS_TOKEN_EXPIRATION_MINUTES:-120}"
+      JwtOptions__RefreshTokenExpirationDays: "${JWT_REFRESH_TOKEN_EXPIRATION_DAYS:-7}"
+      RabbitMqOptions__HostName: ${RABBITMQ_HOSTNAME:-host.docker.internal}
+      RabbitMqOptions__Port: "${RABBITMQ_PORT:-5672}"
+      RabbitMqOptions__UserName: ${RABBITMQ_USERNAME:-admin}
+      RabbitMqOptions__Password: ${RABBITMQ_PASSWORD:-change-this-dev-password}
+      RabbitMqOptions__VirtualHost: ${RABBITMQ_VIRTUAL_HOST:-/}
+      LoggingOptions__Environment: Development
+    networks:
+      - explore-dev
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+networks:
+  explore-dev:
+
+volumes:
+  caddy_data:
+  caddy_config:

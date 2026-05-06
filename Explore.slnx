@@ -1,0 +1,117 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/BuildingBlocks/BuildingBlocks.Caching/">
+    <Project Path="src/BuildingBlocks/BuildingBlocks.Caching/BuildingBlocks.Caching.Abstractions/BuildingBlocks.Caching.Abstractions.csproj" Id="d421b6d8-12a0-49c7-a206-a59f495cb55f" />
+    <Project Path="src/BuildingBlocks/BuildingBlocks.Caching/BuildingBlocks.Caching.Redis/BuildingBlocks.Caching.Redis.csproj" />
+  </Folder>
+  <Folder Name="/src/BuildingBlocks/BuildingBlocks.DistributedLocking/">
+    <Project Path="src/BuildingBlocks/BuildingBlocks.DistributedLocking/BuildingBlocks.DistributedLocking.Abstractions/BuildingBlocks.DistributedLocking.Abstractions.csproj" />
+    <Project Path="src/BuildingBlocks/BuildingBlocks.DistributedLocking/BuildingBlocks.DistributedLocking.Redis/BuildingBlocks.DistributedLocking.Redis.csproj" />
+  </Folder>
+  <Folder Name="/src/BuildingBlocks/BuildingBlocks.Correlation/">
+    <Project Path="src/BuildingBlocks/BuildingBlocks.Correlation/BuildingBlocks.Correlation.Abstractions/BuildingBlocks.Correlation.Abstractions.csproj" Id="0e6d3894-90ed-41bd-94fc-86d9f29f119a" />
+    <Project Path="src/BuildingBlocks/BuildingBlocks.Correlation/BuildingBlocks.Correlation.AspNetCore/BuildingBlocks.Correlation.AspNetCore.csproj" Id="ad1ae093-7734-4b0d-b709-0fae64b524d5" />
+  </Folder>
+  <Folder Name="/src/BuildingBlocks/BuildingBlocks.CurrentUser/">
+    <Project Path="src/BuildingBlocks/BuildingBlocks.CurrentUser/BuildingBlocks.CurrentUser.Abstractions/BuildingBlocks.CurrentUser.Abstractions.csproj" Id="64aeeb45-e9e3-4747-a632-3f6923d2bef1" />
+    <Project Path="src/BuildingBlocks/BuildingBlocks.CurrentUser/BuildingBlocks.CurrentUser.AspNetCore/BuildingBlocks.CurrentUser.AspNetCore.csproj" />
+  </Folder>
+  <Folder Name="/src/BuildingBlocks/BuildingBlocks.Common/">
+    <Project Path="src/BuildingBlocks/BuildingBlocks.Common/BuildingBlocks.Common/BuildingBlocks.Common.csproj" Id="edba08d1-616c-4e6d-ab5f-921b0c11b21f" />
+    <Project Path="src/BuildingBlocks/BuildingBlocks.Common/BuildingBlocks.Common.AspNetCore/BuildingBlocks.Common.AspNetCore.csproj" />
+    <Project Path="src/BuildingBlocks/BuildingBlocks.Common/BuildingBlocks.Common.Http/BuildingBlocks.Common.Http.csproj" />
+  </Folder>
+  <Folder Name="/src/BuildingBlocks/BuildingBlocks.Logging/">
+    <Project Path="src/BuildingBlocks/BuildingBlocks.Logging/BuildingBlocks.Logging.Serilog/BuildingBlocks.Logging.Serilog.csproj" Id="ece5dc3e-56c3-4dee-8850-4f12c528aee6" />
+  </Folder>
+  <Folder Name="/src/BuildingBlocks/BuildingBlocks.OpenApi/">
+    <Project Path="src/BuildingBlocks/BuildingBlocks.OpenApi/BuildingBlocks.OpenApi.AspNetCore/BuildingBlocks.OpenApi.AspNetCore.csproj" Id="8e569140-7641-4544-a0af-b51ca17f5c7d" />
+  </Folder>
+  <Folder Name="/src/BuildingBlocks/BuildingBlocks.Security/" />
+  <Folder Name="/src/BuildingBlocks/BuildingBlocks.Security/BuildingBlocks.Security.Authentication/">
+    <Project Path="src/BuildingBlocks/BuildingBlocks.Security/BuildingBlocks.Security.Authentication/BuildingBlocks.Security.Authentication.Abstractions/BuildingBlocks.Security.Authentication.Abstractions.csproj" />
+    <Project Path="src/BuildingBlocks/BuildingBlocks.Security/BuildingBlocks.Security.Authentication/BuildingBlocks.Security.Authentication.Jwt/BuildingBlocks.Security.Authentication.Jwt.csproj" />
+  </Folder>
+  <Folder Name="/src/BuildingBlocks/BuildingBlocks.Security/BuildingBlocks.Security.Authorization/">
+    <Project Path="src/BuildingBlocks/BuildingBlocks.Security/BuildingBlocks.Security.Authorization/BuildingBlocks.Security.Authorization.Abstractions/BuildingBlocks.Security.Authorization.Abstractions.csproj" />
+    <Project Path="src/BuildingBlocks/BuildingBlocks.Security/BuildingBlocks.Security.Authorization/BuildingBlocks.Security.Authorization.AspNetCore/BuildingBlocks.Security.Authorization.AspNetCore.csproj" />
+  </Folder>
+  <Folder Name="/src/BuildingBlocks/BuildingBlocks.Security/BuildingBlocks.Security.Hashing/">
+    <Project Path="src/BuildingBlocks/BuildingBlocks.Security/BuildingBlocks.Security.Hashing/BuildingBlocks.Security.Hashing.Abstractions/BuildingBlocks.Security.Hashing.Abstractions.csproj" />
+    <Project Path="src/BuildingBlocks/BuildingBlocks.Security/BuildingBlocks.Security.Hashing/BuildingBlocks.Security.Hashing.AspNetCoreIdentity/BuildingBlocks.Security.Hashing.AspNetCoreIdentity.csproj" />
+  </Folder>
+  <Folder Name="/src/BuildingBlocks/BuildingBlocks.Security/BuildingBlocks.Security.PhoneVerification/">
+    <Project Path="src/BuildingBlocks/BuildingBlocks.Security/BuildingBlocks.Security.PhoneVerification/BuildingBlocks.Security.PhoneVerification.Abstractions/BuildingBlocks.Security.PhoneVerification.Abstractions.csproj" />
+    <Project Path="src/BuildingBlocks/BuildingBlocks.Security/BuildingBlocks.Security.PhoneVerification/BuildingBlocks.Security.PhoneVerification/BuildingBlocks.Security.PhoneVerification.csproj" />
+  </Folder>
+  <Folder Name="/src/Contracts/">
+    <Project Path="src/Contracts/Explore.Contracts.Messaging/Explore.Contracts.Messaging.csproj" Id="0dc06f2a-3b77-4c76-a930-b79113d3c465" />
+  </Folder>
+  <Folder Name="/src/BuildingBlocks/BuildingBlocks.Messaging/">
+    <Project Path="src/BuildingBlocks/BuildingBlocks.Messaging/BuildingBlocks.Messaging.Abstractions/BuildingBlocks.Messaging.Abstractions.csproj" Id="ac3fa5d1-7adf-4fe9-8192-6665d21f791d" />
+    <Project Path="src/BuildingBlocks/BuildingBlocks.Messaging/BuildingBlocks.Messaging.RabbitMQ/BuildingBlocks.Messaging.RabbitMQ.csproj" Id="929683b8-b50e-4c69-90aa-ae8460c27833" />
+  </Folder>
+  <Folder Name="/src/BuildingBlocks/BuildingBlocks.Messaging/BuildingBlocks.Messaging.Outbox/">
+    <Project Path="src/BuildingBlocks/BuildingBlocks.Messaging/BuildingBlocks.Messaging.Outbox/BuildingBlocks.Messaging.Outbox.Abstractions/BuildingBlocks.Messaging.Outbox.Abstractions.csproj" />
+    <Project Path="src/BuildingBlocks/BuildingBlocks.Messaging/BuildingBlocks.Messaging.Outbox/BuildingBlocks.Messaging.Outbox.EntityFrameworkCore/BuildingBlocks.Messaging.Outbox.EntityFrameworkCore.csproj" Id="a23895e1-dc54-43b6-8f2b-fa00c9b6b83e" />
+  </Folder>
+  <Folder Name="/src/BuildingBlocks/BuildingBlocks.Messaging/BuildingBlocks.Messaging.Inbox/">
+    <Project Path="src/BuildingBlocks/BuildingBlocks.Messaging/BuildingBlocks.Messaging.Inbox/BuildingBlocks.Messaging.Inbox.Abstractions/BuildingBlocks.Messaging.Inbox.Abstractions.csproj" />
+    <Project Path="src/BuildingBlocks/BuildingBlocks.Messaging/BuildingBlocks.Messaging.Inbox/BuildingBlocks.Messaging.Inbox.EntityFrameworkCore/BuildingBlocks.Messaging.Inbox.EntityFrameworkCore.csproj" />
+  </Folder>
+  <Folder Name="/src/BuildingBlocks/BuildingBlocks.Persistence/">
+    <Project Path="src/BuildingBlocks/BuildingBlocks.Persistence/BuildingBlocks.Persistence.Auditing.Abstractions/BuildingBlocks.Persistence.Auditing.Abstractions.csproj" />
+    <Project Path="src/BuildingBlocks/BuildingBlocks.Persistence/BuildingBlocks.Persistence.Auditing.EntityFrameworkCore/BuildingBlocks.Persistence.Auditing.EntityFrameworkCore.csproj" />
+    <Project Path="src/BuildingBlocks/BuildingBlocks.Persistence/BuildingBlocks.Persistence.Auditing.CurrentUser/BuildingBlocks.Persistence.Auditing.CurrentUser.csproj" />
+  </Folder>
+  <Folder Name="/src/BuildingBlocks/BuildingBlocks.Domain/">
+    <Project Path="src/BuildingBlocks/BuildingBlocks.Domain/BuildingBlocks.Domain.Core/BuildingBlocks.Domain.Core.csproj" Id="cb7bad2d-e911-49b5-aa17-254eb9274cd7" />
+  </Folder>
+  <Folder Name="/src/BuildingBlocks/BuildingBlocks.DependencyInjection/">
+    <Project Path="src/BuildingBlocks/BuildingBlocks.DependencyInjection/BuildingBlocks.DependencyInjection.Abstractions/BuildingBlocks.DependencyInjection.Abstractions.csproj" Id="64eeef92-eb37-43cf-b028-43a29c06be8c" />
+    <Project Path="src/BuildingBlocks/BuildingBlocks.DependencyInjection/BuildingBlocks.DependencyInjection.Conventional/BuildingBlocks.DependencyInjection.Conventional.csproj" />
+  </Folder>
+  <Folder Name="/src/BuildingBlocks/">
+  </Folder>
+  <Folder Name="/src/Gateways/">
+    <Project Path="src/Gateways/Explore.Gateway.Api/Explore.Gateway.Api.csproj" Id="589f3c55-29d1-44f2-8fbe-8362977352ae" />
+  </Folder>
+  <Folder Name="/src/Services/" />
+  <Folder Name="/src/Services/AdminIdentityService/">
+    <Project Path="src/Services/AdminIdentityService/Explore.AdminIdentityService.Api/Explore.AdminIdentityService.Api.csproj" Id="2d7771c7-2199-403b-b251-9f8dba9222dc" />
+    <Project Path="src/Services/AdminIdentityService/Explore.AdminIdentityService.Application/Explore.AdminIdentityService.Application.csproj" Id="171aa692-46c4-4c2d-b525-7fa57e4bf9cd" />
+    <Project Path="src/Services/AdminIdentityService/Explore.AdminIdentityService.Domain/Explore.AdminIdentityService.Domain.csproj" Id="d19e0077-1860-43df-b772-dd24f7594cdc" />
+    <Project Path="src/Services/AdminIdentityService/Explore.AdminIdentityService.Infrastructure/Explore.AdminIdentityService.Infrastructure.csproj" Id="4e21a34a-68b0-4bec-8fcc-cef1d104af05" />
+  </Folder>
+  <Folder Name="/src/Services/CustomerAccountService/">
+    <Project Path="src/Services/CustomerAccountService/Explore.CustomerAccountService.Api/Explore.CustomerAccountService.Api.csproj" />
+    <Project Path="src/Services/CustomerAccountService/Explore.CustomerAccountService.Application/Explore.CustomerAccountService.Application.csproj" />
+    <Project Path="src/Services/CustomerAccountService/Explore.CustomerAccountService.Domain/Explore.CustomerAccountService.Domain.csproj" />
+    <Project Path="src/Services/CustomerAccountService/Explore.CustomerAccountService.Infrastructure/Explore.CustomerAccountService.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/Services/MessageCenterService/">
+    <Project Path="src/Services/MessageCenterService/Explore.MessageCenterService.Api/Explore.MessageCenterService.Api.csproj" Id="d46bf50d-8c76-4451-b7c3-cbd1db221616" />
+    <Project Path="src/Services/MessageCenterService/Explore.MessageCenterService.Application/Explore.MessageCenterService.Application.csproj" Id="057045b1-0ea6-46d0-9ca2-d51d9dfca3ac" />
+    <Project Path="src/Services/MessageCenterService/Explore.MessageCenterService.Domain/Explore.MessageCenterService.Domain.csproj" Id="670be22a-1086-4482-866f-f330bd77a5a6" />
+    <Project Path="src/Services/MessageCenterService/Explore.MessageCenterService.Infrastructure/Explore.MessageCenterService.Infrastructure.csproj" Id="aa13ffc1-8714-407b-97f5-32e93214b338" />
+  </Folder>
+  <Folder Name="/tests/" />
+  <Folder Name="/tests/BuildingBlocks/">
+    <Project Path="tests/BuildingBlocks/Explore.BuildingBlocks.Messaging.EntityFrameworkCore.Tests/Explore.BuildingBlocks.Messaging.EntityFrameworkCore.Tests.csproj" Id="07388145-0cc1-4fa6-b4f2-5508dc5f2f13" />
+  </Folder>
+  <Folder Name="/tests/Services/" />
+  <Folder Name="/tests/Services/AdminIdentityService/">
+    <Project Path="tests/Services/AdminIdentityService/Explore.AdminIdentityService.Application.Tests/Explore.AdminIdentityService.Application.Tests.csproj" Id="7fd26a3a-5352-4dd6-acdc-84061472895a" />
+  </Folder>
+  <Folder Name="/tests/Services/CustomerAccountService/">
+    <Project Path="tests/Services/CustomerAccountService/Explore.CustomerAccountService.Application.Tests/Explore.CustomerAccountService.Application.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Services/MessageCenterService/">
+    <Project Path="tests/Services/MessageCenterService/Explore.MessageCenterService.Application.Tests/Explore.MessageCenterService.Application.Tests.csproj" Id="e5504f5b-8a3f-4605-b5d2-6a9b6c3b520a" />
+  </Folder>
+</Solution>
+
+
+
+
+

@@ -1,0 +1,54 @@
+{
+  "pages": [
+    {
+      "path": "pages/home/index",
+      "style": {
+        "navigationBarTitleText": "服务中心"
+      }
+    },
+    {
+      "path": "features/customer-account/pages/profile/index",
+      "style": {
+        "navigationBarTitleText": "我的"
+      }
+    },
+    {
+      "path": "features/customer-account/pages/login/index",
+      "style": {
+        "navigationBarTitleText": "手机号登录"
+      }
+    },
+    {
+      "path": "features/customer-account/pages/edit/index",
+      "style": {
+        "navigationBarTitleText": "编辑资料"
+      }
+    }
+  ],
+  "tabBar": {
+    "color": "#6D817D",
+    "selectedColor": "#203A37",
+    "backgroundColor": "#F8FBFA",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/home/index",
+        "text": "服务",
+        "iconPath": "static/tabbar/service.png",
+        "selectedIconPath": "static/tabbar/service-active.png"
+      },
+      {
+        "pagePath": "features/customer-account/pages/profile/index",
+        "text": "我的",
+        "iconPath": "static/tabbar/profile.png",
+        "selectedIconPath": "static/tabbar/profile-active.png"
+      }
+    ]
+  },
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "服务中心",
+    "navigationBarBackgroundColor": "#F8FBFA",
+    "backgroundColor": "#EEF5F3"
+  }
+}

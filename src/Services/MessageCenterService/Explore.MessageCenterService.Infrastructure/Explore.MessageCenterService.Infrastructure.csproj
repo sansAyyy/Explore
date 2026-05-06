@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+</PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\BuildingBlocks.Common\BuildingBlocks.Common.Http\BuildingBlocks.Common.Http.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\BuildingBlocks.DependencyInjection\BuildingBlocks.DependencyInjection.Abstractions\BuildingBlocks.DependencyInjection.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\BuildingBlocks.Messaging\BuildingBlocks.Messaging.Inbox\BuildingBlocks.Messaging.Inbox.Abstractions\BuildingBlocks.Messaging.Inbox.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\BuildingBlocks.Messaging\BuildingBlocks.Messaging.Inbox\BuildingBlocks.Messaging.Inbox.EntityFrameworkCore\BuildingBlocks.Messaging.Inbox.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\BuildingBlocks.Messaging\BuildingBlocks.Messaging.RabbitMQ\BuildingBlocks.Messaging.RabbitMQ.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\BuildingBlocks.Security\BuildingBlocks.Security.Authentication\BuildingBlocks.Security.Authentication.Jwt\BuildingBlocks.Security.Authentication.Jwt.csproj" />
+    <ProjectReference Include="..\..\..\Contracts\Explore.Contracts.Messaging\Explore.Contracts.Messaging.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\BuildingBlocks.CurrentUser\BuildingBlocks.CurrentUser.AspNetCore\BuildingBlocks.CurrentUser.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\BuildingBlocks.Persistence\BuildingBlocks.Persistence.Auditing.CurrentUser\BuildingBlocks.Persistence.Auditing.CurrentUser.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\BuildingBlocks.Persistence\BuildingBlocks.Persistence.Auditing.EntityFrameworkCore\BuildingBlocks.Persistence.Auditing.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\Explore.MessageCenterService.Application\Explore.MessageCenterService.Application.csproj" />
+    <ProjectReference Include="..\Explore.MessageCenterService.Domain\Explore.MessageCenterService.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
+
+
+
+
+
+

@@ -1,0 +1,59 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.4" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\BuildingBlocks\BuildingBlocks.Caching\BuildingBlocks.Caching.Abstractions\BuildingBlocks.Caching.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\src\BuildingBlocks\BuildingBlocks.Caching\BuildingBlocks.Caching.Redis\BuildingBlocks.Caching.Redis.csproj" />
+    <ProjectReference Include="..\..\..\src\BuildingBlocks\BuildingBlocks.Common\BuildingBlocks.Common.AspNetCore\BuildingBlocks.Common.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\..\src\BuildingBlocks\BuildingBlocks.Common\BuildingBlocks.Common\BuildingBlocks.Common.csproj" />
+    <ProjectReference Include="..\..\..\src\BuildingBlocks\BuildingBlocks.Common\BuildingBlocks.Common.Http\BuildingBlocks.Common.Http.csproj" />
+    <ProjectReference Include="..\..\..\src\BuildingBlocks\BuildingBlocks.Correlation\BuildingBlocks.Correlation.Abstractions\BuildingBlocks.Correlation.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\src\BuildingBlocks\BuildingBlocks.Correlation\BuildingBlocks.Correlation.AspNetCore\BuildingBlocks.Correlation.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\..\src\BuildingBlocks\BuildingBlocks.CurrentUser\BuildingBlocks.CurrentUser.Abstractions\BuildingBlocks.CurrentUser.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\src\BuildingBlocks\BuildingBlocks.CurrentUser\BuildingBlocks.CurrentUser.AspNetCore\BuildingBlocks.CurrentUser.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\..\src\BuildingBlocks\BuildingBlocks.DependencyInjection\BuildingBlocks.DependencyInjection.Abstractions\BuildingBlocks.DependencyInjection.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\src\BuildingBlocks\BuildingBlocks.DependencyInjection\BuildingBlocks.DependencyInjection.Conventional\BuildingBlocks.DependencyInjection.Conventional.csproj" />
+    <ProjectReference Include="..\..\..\src\BuildingBlocks\BuildingBlocks.DistributedLocking\BuildingBlocks.DistributedLocking.Abstractions\BuildingBlocks.DistributedLocking.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\src\BuildingBlocks\BuildingBlocks.DistributedLocking\BuildingBlocks.DistributedLocking.Redis\BuildingBlocks.DistributedLocking.Redis.csproj" />
+    <ProjectReference Include="..\..\..\src\BuildingBlocks\BuildingBlocks.Domain\BuildingBlocks.Domain.Core\BuildingBlocks.Domain.Core.csproj" />
+    <ProjectReference Include="..\..\..\src\BuildingBlocks\BuildingBlocks.Logging\BuildingBlocks.Logging.Serilog\BuildingBlocks.Logging.Serilog.csproj" />
+    <ProjectReference Include="..\..\..\src\BuildingBlocks\BuildingBlocks.Messaging\BuildingBlocks.Messaging.Abstractions\BuildingBlocks.Messaging.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\src\BuildingBlocks\BuildingBlocks.Messaging\BuildingBlocks.Messaging.Outbox\BuildingBlocks.Messaging.Outbox.Abstractions\BuildingBlocks.Messaging.Outbox.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\src\BuildingBlocks\BuildingBlocks.Messaging\BuildingBlocks.Messaging.Outbox\BuildingBlocks.Messaging.Outbox.EntityFrameworkCore\BuildingBlocks.Messaging.Outbox.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\..\src\BuildingBlocks\BuildingBlocks.Messaging\BuildingBlocks.Messaging.Inbox\BuildingBlocks.Messaging.Inbox.Abstractions\BuildingBlocks.Messaging.Inbox.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\src\BuildingBlocks\BuildingBlocks.Messaging\BuildingBlocks.Messaging.Inbox\BuildingBlocks.Messaging.Inbox.EntityFrameworkCore\BuildingBlocks.Messaging.Inbox.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\..\src\BuildingBlocks\BuildingBlocks.Messaging\BuildingBlocks.Messaging.RabbitMQ\BuildingBlocks.Messaging.RabbitMQ.csproj" />
+    <ProjectReference Include="..\..\..\src\BuildingBlocks\BuildingBlocks.OpenApi\BuildingBlocks.OpenApi.AspNetCore\BuildingBlocks.OpenApi.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\..\src\BuildingBlocks\BuildingBlocks.Persistence\BuildingBlocks.Persistence.Auditing.Abstractions\BuildingBlocks.Persistence.Auditing.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\src\BuildingBlocks\BuildingBlocks.Persistence\BuildingBlocks.Persistence.Auditing.EntityFrameworkCore\BuildingBlocks.Persistence.Auditing.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\..\src\BuildingBlocks\BuildingBlocks.Persistence\BuildingBlocks.Persistence.Auditing.CurrentUser\BuildingBlocks.Persistence.Auditing.CurrentUser.csproj" />
+    <ProjectReference Include="..\..\..\src\BuildingBlocks\BuildingBlocks.Security\BuildingBlocks.Security.Authentication\BuildingBlocks.Security.Authentication.Abstractions\BuildingBlocks.Security.Authentication.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\src\BuildingBlocks\BuildingBlocks.Security\BuildingBlocks.Security.Authentication\BuildingBlocks.Security.Authentication.Jwt\BuildingBlocks.Security.Authentication.Jwt.csproj" />
+    <ProjectReference Include="..\..\..\src\BuildingBlocks\BuildingBlocks.Security\BuildingBlocks.Security.Authorization\BuildingBlocks.Security.Authorization.Abstractions\BuildingBlocks.Security.Authorization.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\src\BuildingBlocks\BuildingBlocks.Security\BuildingBlocks.Security.Authorization\BuildingBlocks.Security.Authorization.AspNetCore\BuildingBlocks.Security.Authorization.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\..\src\BuildingBlocks\BuildingBlocks.Security\BuildingBlocks.Security.Hashing\BuildingBlocks.Security.Hashing.Abstractions\BuildingBlocks.Security.Hashing.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\src\BuildingBlocks\BuildingBlocks.Security\BuildingBlocks.Security.Hashing\BuildingBlocks.Security.Hashing.AspNetCoreIdentity\BuildingBlocks.Security.Hashing.AspNetCoreIdentity.csproj" />
+    <ProjectReference Include="..\..\..\src\BuildingBlocks\BuildingBlocks.Security\BuildingBlocks.Security.PhoneVerification\BuildingBlocks.Security.PhoneVerification.Abstractions\BuildingBlocks.Security.PhoneVerification.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\src\BuildingBlocks\BuildingBlocks.Security\BuildingBlocks.Security.PhoneVerification\BuildingBlocks.Security.PhoneVerification\BuildingBlocks.Security.PhoneVerification.csproj" />
+  </ItemGroup>
+
+</Project>
+
+

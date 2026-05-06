@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\src\BuildingBlocks\BuildingBlocks.Caching\BuildingBlocks.Caching.Abstractions\BuildingBlocks.Caching.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\..\src\BuildingBlocks\BuildingBlocks.Common\BuildingBlocks.Common\BuildingBlocks.Common.csproj" />
+    <ProjectReference Include="..\..\..\..\src\BuildingBlocks\BuildingBlocks.CurrentUser\BuildingBlocks.CurrentUser.Abstractions\BuildingBlocks.CurrentUser.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\..\src\BuildingBlocks\BuildingBlocks.Security\BuildingBlocks.Security.Authentication\BuildingBlocks.Security.Authentication.Abstractions\BuildingBlocks.Security.Authentication.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\..\src\BuildingBlocks\BuildingBlocks.Security\BuildingBlocks.Security.Authentication\BuildingBlocks.Security.Authentication.Jwt\BuildingBlocks.Security.Authentication.Jwt.csproj" />
+    <ProjectReference Include="..\..\..\..\src\BuildingBlocks\BuildingBlocks.Security\BuildingBlocks.Security.Authorization\BuildingBlocks.Security.Authorization.Abstractions\BuildingBlocks.Security.Authorization.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\..\src\BuildingBlocks\BuildingBlocks.Security\BuildingBlocks.Security.PhoneVerification\BuildingBlocks.Security.PhoneVerification.Abstractions\BuildingBlocks.Security.PhoneVerification.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\..\src\BuildingBlocks\BuildingBlocks.Security\BuildingBlocks.Security.PhoneVerification\BuildingBlocks.Security.PhoneVerification\BuildingBlocks.Security.PhoneVerification.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Services\CustomerAccountService\Explore.CustomerAccountService.Api\Explore.CustomerAccountService.Api.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Services\CustomerAccountService\Explore.CustomerAccountService.Application\Explore.CustomerAccountService.Application.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Services\CustomerAccountService\Explore.CustomerAccountService.Domain\Explore.CustomerAccountService.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
+
+
+

@@ -1,0 +1,27 @@
+{
+	email {$CADDY_EMAIL}
+}
+
+{$ADMIN_WEB_DOMAIN} {
+	tls {
+		dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+		resolvers 1.1.1.1 1.0.0.1
+	}
+	reverse_proxy admin-web:80
+}
+
+{$CUSTOMER_MINIAPP_DOMAIN} {
+	tls {
+		dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+		resolvers 1.1.1.1 1.0.0.1
+	}
+	reverse_proxy customer-miniapp:80
+}
+
+{$GATEWAY_DOMAIN} {
+	tls {
+		dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+		resolvers 1.1.1.1 1.0.0.1
+	}
+	reverse_proxy gateway:8080
+}

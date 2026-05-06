@@ -1,0 +1,78 @@
+@Explore.CustomerAccountService.Api_HostAddress = http://localhost:5206
+@phoneNumber = 13800138000
+@accessToken = ReplaceWithLoginAccessToken
+@adminAccessToken = ReplaceWithAdminAccessToken
+@refreshToken = ReplaceWithLoginRefreshToken
+@customerUserId = ReplaceWithCustomerUserId
+
+### Send phone login code
+POST {{Explore.CustomerAccountService.Api_HostAddress}}/api/customer-auth/phone/code
+Content-Type: application/json
+
+{
+  "phoneNumber": "{{phoneNumber}}"
+}
+
+### Customer phone login
+POST {{Explore.CustomerAccountService.Api_HostAddress}}/api/customer-auth/phone/login
+Content-Type: application/json
+
+{
+  "phoneNumber": "{{phoneNumber}}",
+  "verificationCode": "ReplaceWithReceivedCode"
+}
+
+### Refresh customer token
+POST {{Explore.CustomerAccountService.Api_HostAddress}}/api/customer-auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+### Logout current customer session
+POST {{Explore.CustomerAccountService.Api_HostAddress}}/api/customer-auth/logout
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+### Current customer profile
+GET {{Explore.CustomerAccountService.Api_HostAddress}}/api/customer-current-user
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Update current customer profile
+PUT {{Explore.CustomerAccountService.Api_HostAddress}}/api/customer-current-user
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "nickName": "Updated NickName",
+  "avatarUrl": "https://example.com/avatar.png",
+  "email": "customer@example.test"
+}
+
+### Notification profile
+GET {{Explore.CustomerAccountService.Api_HostAddress}}/api/users/{{customerUserId}}/notification-profile
+Accept: application/json
+
+### Admin customer list
+GET {{Explore.CustomerAccountService.Api_HostAddress}}/api/admin-customers?pageIndex=1&pageSize=10&keyword={{phoneNumber}}&isActive=true
+Authorization: Bearer {{adminAccessToken}}
+Accept: application/json
+
+### Admin customer detail
+GET {{Explore.CustomerAccountService.Api_HostAddress}}/api/admin-customers/{{customerUserId}}
+Authorization: Bearer {{adminAccessToken}}
+Accept: application/json
+
+### Enable customer
+PUT {{Explore.CustomerAccountService.Api_HostAddress}}/api/admin-customers/{{customerUserId}}/enable
+Authorization: Bearer {{adminAccessToken}}
+
+### Disable customer
+PUT {{Explore.CustomerAccountService.Api_HostAddress}}/api/admin-customers/{{customerUserId}}/disable
+Authorization: Bearer {{adminAccessToken}}

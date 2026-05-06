@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\src\BuildingBlocks\BuildingBlocks.Common\BuildingBlocks.Common\BuildingBlocks.Common.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Contracts\Explore.Contracts.Messaging\Explore.Contracts.Messaging.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Services\MessageCenterService\Explore.MessageCenterService.Api\Explore.MessageCenterService.Api.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Services\MessageCenterService\Explore.MessageCenterService.Application\Explore.MessageCenterService.Application.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Services\MessageCenterService\Explore.MessageCenterService.Domain\Explore.MessageCenterService.Domain.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Services\MessageCenterService\Explore.MessageCenterService.Infrastructure\Explore.MessageCenterService.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
+
+
+

@@ -1,0 +1,73 @@
+# docker compose --env-file docker/env/dev-infra.env -f docker/compose.dev-infra.yaml up -d
+name: explore-dev-infra
+
+services:
+  pgsql:
+    image: postgres:16-alpine
+    container_name: explore-pgsql-dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-this-dev-password}
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}
+      ADMIN_IDENTITY_DB: ${ADMIN_IDENTITY_DB:-explore_admin_identity_dev}
+      CUSTOMER_ACCOUNT_DB: ${CUSTOMER_ACCOUNT_DB:-explore_customer_account_dev}
+      MESSAGE_CENTER_DB: ${MESSAGE_CENTER_DB:-explore_message_center_dev}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgsql_data:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - explore-dev-infra
+
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: explore-rabbitmq-dev
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME:-admin}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-change-this-dev-password}
+      RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VIRTUAL_HOST:-/}
+    ports:
+      - "${RABBITMQ_PORT:-5672}:5672"
+      - "${RABBITMQ_MANAGEMENT_PORT:-15672}:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - explore-dev-infra
+
+  redis:
+    image: redis:7.4-alpine
+    container_name: explore-redis-dev
+    restart: unless-stopped
+    command: [ "redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD:-change-this-dev-password}" ]
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-change-this-dev-password}", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - explore-dev-infra
+
+volumes:
+  pgsql_data:
+  rabbitmq_data:
+  redis_data:
+
+networks:
+  explore-dev-infra:

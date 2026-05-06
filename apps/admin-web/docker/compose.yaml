@@ -1,0 +1,10 @@
+services:
+  admin-web:
+    image: admin-web:local
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      args:
+        VITE_GATEWAY_BASE_URL: ${VITE_GATEWAY_BASE_URL:-http://localhost:5203}
+    ports:
+      - "${ADMIN_WEB_PORT:-8080}:80"
