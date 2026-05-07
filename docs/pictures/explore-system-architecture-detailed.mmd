@@ -1,0 +1,252 @@
+%% Explore detailed project architecture
+%% Generated from repository structure on 2026-05-07.
+flowchart TB
+    classDef app fill:#eaf4ff,stroke:#2f6fed,color:#102a43,stroke-width:1px
+    classDef gateway fill:#eef2ff,stroke:#4f46e5,color:#1f2937,stroke-width:1px
+    classDef api fill:#f0fdfa,stroke:#0f766e,color:#134e4a,stroke-width:1px
+    classDef appLayer fill:#f7fee7,stroke:#65a30d,color:#365314,stroke-width:1px
+    classDef domain fill:#fff7ed,stroke:#ea580c,color:#7c2d12,stroke-width:1px
+    classDef infra fill:#fefce8,stroke:#ca8a04,color:#713f12,stroke-width:1px
+    classDef data fill:#fdf2f8,stroke:#db2777,color:#831843,stroke-width:1px
+    classDef shared fill:#f8fafc,stroke:#64748b,color:#0f172a,stroke-width:1px
+    classDef test fill:#faf5ff,stroke:#9333ea,color:#581c87,stroke-width:1px
+    classDef external fill:#f1f5f9,stroke:#475569,color:#0f172a,stroke-width:1px
+
+    subgraph Users["使用入口"]
+        BrowserAdmin["管理员浏览器"]:::app
+        CustomerClient["客户侧 H5 / 小程序"]:::app
+    end
+
+    subgraph Frontend["apps 前端应用"]
+        AdminWeb["apps/admin-web<br/>Vue 3 + TypeScript + Vite<br/>Pinia / Vue Router / Element Plus<br/>功能: 登录 会话 RBAC 菜单 管理员 角色 权限 客户 消息模板 站内信"]:::app
+        CustomerMiniapp["apps/customer-miniapp<br/>uni-app + Vue 3 + TypeScript<br/>页面: 首页 手机号登录 个人资料 编辑资料<br/>目标: H5 / 微信小程序"]:::app
+        AdminWebGateway["shared/api/gateway.ts<br/>admin-identity / customer-account / message-center 前缀拼接"]:::app
+        CustomerGateway["shared/api/gateway.ts<br/>customer-account 前缀拼接"]:::app
+    end
+
+    subgraph Edge["可选域名边缘层 docker/caddy"]
+        Caddy["edge-proxy Caddy<br/>admin.example.com -> admin-web<br/>app.example.com -> customer-miniapp<br/>api.example.com -> gateway<br/>Cloudflare DNS-01 TLS"]:::external
+    end
+
+    subgraph Gateway["src/Gateways/Explore.Gateway.Api"]
+        GatewayApi["Explore.Gateway.Api<br/>ASP.NET Core + YARP<br/>统一 CORS / JWT 鉴权 / 授权策略<br/>CorrelationId / Serilog / health"]:::gateway
+        GatewayRoutes["ReverseProxy Routes<br/>/admin-identity/** -> AdminIdentityService<br/>/customer-account/** -> CustomerAccountService<br/>/message-center/** -> MessageCenterService<br/>PathRemovePrefix"]:::gateway
+    end
+
+    BrowserAdmin --> AdminWeb
+    CustomerClient --> CustomerMiniapp
+    AdminWeb --> AdminWebGateway
+    CustomerMiniapp --> CustomerGateway
+    AdminWeb -.容器域名模式.-> Caddy
+    CustomerMiniapp -.容器域名模式.-> Caddy
+    Caddy --> GatewayApi
+    AdminWebGateway --> GatewayApi
+    CustomerGateway --> GatewayApi
+    GatewayApi --> GatewayRoutes
+
+    subgraph AdminSvc["src/Services/AdminIdentityService"]
+        direction TB
+        subgraph AdminApi["Explore.AdminIdentityService.Api"]
+            AdminControllers["Controllers<br/>api/admin-auth<br/>api/admin-current-user<br/>api/admin-authorization/current<br/>api/admin-users<br/>api/admin-users/{userId}/roles<br/>api/admin-roles<br/>api/admin-permissions<br/>health / OpenAPI"]:::api
+        end
+        subgraph AdminApp["Explore.AdminIdentityService.Application"]
+            AdminAppServices["Application Services<br/>AdminAuthenticationAppService<br/>CurrentAdminAppService<br/>AdminAuthorizationAppService<br/>AdminUserAppService<br/>AdminRoleAppService<br/>AdminPermissionAppService"]:::appLayer
+            AdminAppAbstractions["Application Abstractions<br/>repositories + UnitOfWork<br/>IAdminMessageCenterClient<br/>IAdminSiteMessageSender<br/>validators / DTOs"]:::appLayer
+        end
+        subgraph AdminDomain["Explore.AdminIdentityService.Domain"]
+            AdminEntities["Domain Model<br/>AdminUser<br/>AdminRole<br/>AdminPermission<br/>AdminUserRole<br/>AdminRolePermission<br/>PermissionResourceType"]:::domain
+        end
+        subgraph AdminInfra["Explore.AdminIdentityService.Infrastructure"]
+            AdminPersistence["Persistence<br/>AdminIdentityDbContext<br/>Repositories Commands / Queries<br/>AdminIdentityUnitOfWork<br/>EF Core migrations"]:::infra
+            AdminSecurity["Security + Cache<br/>JWT token service<br/>Password hashing<br/>Phone verification code<br/>Redis cache<br/>Redis distributed lock"]:::infra
+            AdminMessaging["Messaging<br/>EF Core Outbox<br/>OutboxDispatcherHostedService<br/>MassTransit RabbitMQ publisher<br/>SendNotificationByTemplateMessage contract"]:::infra
+            AdminHttpClient["MessageCenter HTTP client<br/>短信验证码调用 POST /api/notifications/send"]:::infra
+        end
+    end
+
+    subgraph CustomerSvc["src/Services/CustomerAccountService"]
+        direction TB
+        subgraph CustomerApi["Explore.CustomerAccountService.Api"]
+            CustomerControllers["Controllers<br/>api/customer-auth<br/>api/customer-current-user<br/>api/customer-current-user/avatar<br/>api/admin-customers<br/>api/users/{userId}/notification-profile<br/>health / OpenAPI"]:::api
+        end
+        subgraph CustomerApp["Explore.CustomerAccountService.Application"]
+            CustomerAppServices["Application Services<br/>CustomerAuthenticationAppService<br/>CurrentCustomerAppService<br/>AdminCustomerAppService<br/>NotificationProfileAppService"]:::appLayer
+            CustomerAppAbstractions["Application Abstractions<br/>repositories + UnitOfWork<br/>IMessageCenterClient<br/>validators / DTOs"]:::appLayer
+        end
+        subgraph CustomerDomain["Explore.CustomerAccountService.Domain"]
+            CustomerEntities["Domain Model<br/>Customer"]:::domain
+        end
+        subgraph CustomerInfra["Explore.CustomerAccountService.Infrastructure"]
+            CustomerPersistence["Persistence<br/>CustomerAccountDbContext<br/>Customer repositories<br/>CustomerAccountUnitOfWork<br/>EF Core migrations"]:::infra
+            CustomerSecurity["Security + Cache<br/>JWT token service<br/>Phone verification code<br/>Redis cache<br/>Redis distributed lock"]:::infra
+            CustomerHttpClient["MessageCenter HTTP client<br/>短信 / 通知调用 POST /api/notifications/send"]:::infra
+        end
+    end
+
+    subgraph MessageSvc["src/Services/MessageCenterService"]
+        direction TB
+        subgraph MessageApi["Explore.MessageCenterService.Api"]
+            MessageControllers["Controllers<br/>api/notifications/send<br/>api/message-templates<br/>api/site-messages<br/>api/site-messages/{id}/read<br/>api/site-messages/read-all<br/>health / OpenAPI"]:::api
+        end
+        subgraph MessageApp["Explore.MessageCenterService.Application"]
+            MessageAppServices["Application Services<br/>NotificationAppService<br/>MessageTemplateAppService<br/>SiteMessageAppService"]:::appLayer
+            MessageAppAbstractions["Application Abstractions<br/>repositories + UnitOfWork<br/>IRecipientDirectoryClient<br/>ITemplateRenderer<br/>INotificationChannelSender"]:::appLayer
+        end
+        subgraph MessageDomain["Explore.MessageCenterService.Domain"]
+            MessageEntities["Domain Model<br/>MessageTemplate<br/>NotificationDispatch<br/>SiteMessage<br/>NotificationChannelType<br/>NotificationDispatchStatus"]:::domain
+        end
+        subgraph MessageInfra["Explore.MessageCenterService.Infrastructure"]
+            MessagePersistence["Persistence<br/>MessageCenterDbContext<br/>MessageTemplate / Dispatch / SiteMessage repositories<br/>MessageCenterUnitOfWork<br/>EF Core migrations"]:::infra
+            MessageMessaging["Messaging<br/>MassTransit RabbitMQ consumer<br/>SendNotificationByTemplateMessageConsumer<br/>EF Core Inbox idempotency"]:::infra
+            MessageNotification["Notification Implementations<br/>SimpleTemplateRenderer<br/>SiteMessage 落库<br/>SmsPlaceholderSender<br/>MiniProgramPlaceholderSender"]:::infra
+            RecipientDirectory["Recipient Directory HTTP client<br/>Mode: Http / Stub<br/>GET /api/users/{userId}/notification-profile"]:::infra
+        end
+    end
+
+    GatewayRoutes -->|/admin-identity/**| AdminControllers
+    GatewayRoutes -->|/customer-account/**| CustomerControllers
+    GatewayRoutes -->|/message-center/**| MessageControllers
+
+    AdminControllers --> AdminAppServices
+    AdminAppServices --> AdminAppAbstractions
+    AdminAppServices --> AdminEntities
+    AdminAppAbstractions --> AdminPersistence
+    AdminPersistence --> AdminEntities
+    AdminPersistence --> AdminMessaging
+    AdminAppServices --> AdminSecurity
+    AdminAppServices --> AdminHttpClient
+
+    CustomerControllers --> CustomerAppServices
+    CustomerAppServices --> CustomerAppAbstractions
+    CustomerAppServices --> CustomerEntities
+    CustomerAppAbstractions --> CustomerPersistence
+    CustomerPersistence --> CustomerEntities
+    CustomerAppServices --> CustomerSecurity
+    CustomerAppServices --> CustomerHttpClient
+
+    MessageControllers --> MessageAppServices
+    MessageAppServices --> MessageAppAbstractions
+    MessageAppServices --> MessageEntities
+    MessageAppAbstractions --> MessagePersistence
+    MessagePersistence --> MessageEntities
+    MessageAppServices --> MessageNotification
+    MessageAppServices --> RecipientDirectory
+    MessageMessaging --> MessageAppServices
+
+    subgraph Contracts["src/Contracts"]
+        MessagingContracts["Explore.Contracts.Messaging<br/>SendNotificationByTemplateMessage<br/>NotificationRecipientMessage"]:::shared
+    end
+
+    AdminMessaging --> MessagingContracts
+    MessageMessaging --> MessagingContracts
+
+    subgraph DataAndInfra["基础设施与运行环境"]
+        Postgres["PostgreSQL 16<br/>explore_admin_identity_dev<br/>explore_customer_account_dev<br/>explore_message_center_dev"]:::data
+        AdminDb["AdminIdentity tables<br/>AdminUsers / AdminRoles / AdminPermissions<br/>AdminUserRoles / AdminRolePermissions<br/>OutboxMessages"]:::data
+        CustomerDb["CustomerAccount tables<br/>Customers"]:::data
+        MessageDb["MessageCenter tables<br/>MessageTemplates / NotificationDispatches<br/>SiteMessages / InboxMessages"]:::data
+        Redis["Redis 7.4<br/>cache + phone verification + distributed locks<br/>admin_identity_service / customer_account_service prefixes"]:::data
+        RabbitMQ["RabbitMQ 3.13 + Management<br/>MassTransit transport"]:::data
+        DockerCompose["docker/compose.dev.yaml<br/>full stack: Caddy + apps + gateway + 3 services<br/>docker/compose.dev-infra.yaml<br/>PostgreSQL + Redis + RabbitMQ only"]:::external
+    end
+
+    AdminPersistence --> AdminDb
+    CustomerPersistence --> CustomerDb
+    MessagePersistence --> MessageDb
+    AdminDb --> Postgres
+    CustomerDb --> Postgres
+    MessageDb --> Postgres
+    AdminSecurity --> Redis
+    CustomerSecurity --> Redis
+    AdminMessaging --> RabbitMQ
+    RabbitMQ --> MessageMessaging
+    DockerCompose -.orchestrates.-> Caddy
+    DockerCompose -.orchestrates.-> GatewayApi
+    DockerCompose -.orchestrates.-> AdminControllers
+    DockerCompose -.orchestrates.-> CustomerControllers
+    DockerCompose -.orchestrates.-> MessageControllers
+    DockerCompose -.starts.-> Postgres
+    DockerCompose -.starts.-> Redis
+    DockerCompose -.starts.-> RabbitMQ
+
+    AdminHttpClient -->|HTTP POST /api/notifications/send<br/>管理员短信验证码| MessageControllers
+    CustomerHttpClient -->|HTTP POST /api/notifications/send<br/>客户短信 / 通知| MessageControllers
+    AdminAppServices -->|站内信请求| AdminMessaging
+    AdminMessaging -->|Outbox 同库事务保存| AdminDb
+    AdminMessaging -->|Dispatcher 发布| RabbitMQ
+    RabbitMQ -->|Consume SendNotificationByTemplateMessage| MessageMessaging
+    MessageMessaging -->|Inbox 幂等记录| MessageDb
+    MessageAppServices -->|站内信写入 / 已读查询| MessageDb
+    RecipientDirectory -->|HTTP GET notification profile| CustomerControllers
+
+    subgraph Shared["src/BuildingBlocks 共享基础模块"]
+        BBCommon["Common<br/>Result / Error / PagedResult<br/>HTTP resilience + CorrelationId 透传"]:::shared
+        BBCorrelation["Correlation.AspNetCore<br/>请求 CorrelationId 中间件<br/>日志上下文 / 响应头"]:::shared
+        BBCurrentUser["CurrentUser<br/>ClaimsPrincipal 解析<br/>审计主体"]:::shared
+        BBDependencyInjection["DependencyInjection<br/>IModuleDependencyRegistrar<br/>IScopeDependency / ITransientDependency / ISingletonDependency<br/>AddModules 自动注册"]:::shared
+        BBDomain["Domain.Core<br/>Entity / ValueObject / AuditableEntity<br/>DomainException"]:::shared
+        BBPersistence["Persistence.Auditing.*<br/>AuditableDbContext<br/>审计字段 / 软删除 / 并发版本"]:::shared
+        BBSecurity["Security.*<br/>JWT Authentication<br/>Authorization policies<br/>Password hashing<br/>Phone verification code"]:::shared
+        BBCaching["Caching.Redis<br/>ICacheService + FreeRedis"]:::shared
+        BBLocking["DistributedLocking.Redis<br/>Redis distributed lock"]:::shared
+        BBMessaging["Messaging.*<br/>Abstractions<br/>Outbox.EntityFrameworkCore<br/>Inbox.EntityFrameworkCore<br/>RabbitMQ MassTransit"]:::shared
+        BBLogging["Logging.Serilog<br/>ServiceName enrich<br/>console / async file sinks"]:::shared
+        BBOpenApi["OpenApi.AspNetCore<br/>OpenAPI + Scalar"]:::shared
+        BBCommonAspNet["Common.AspNetCore<br/>ActionResult extensions"]:::shared
+        BBCommonHttp["Common.Http<br/>Typed HttpClient registration"]:::shared
+    end
+
+    GatewayApi -.uses.-> BBCorrelation
+    GatewayApi -.uses.-> BBLogging
+    GatewayApi -.uses.-> BBSecurity
+    AdminControllers -.uses.-> BBCorrelation
+    CustomerControllers -.uses.-> BBCorrelation
+    MessageControllers -.uses.-> BBCorrelation
+    AdminControllers -.uses.-> BBOpenApi
+    CustomerControllers -.uses.-> BBOpenApi
+    MessageControllers -.uses.-> BBOpenApi
+    AdminControllers -.uses.-> BBCommonAspNet
+    CustomerControllers -.uses.-> BBCommonAspNet
+    MessageControllers -.uses.-> BBCommonAspNet
+    AdminAppServices -.uses.-> BBCommon
+    CustomerAppServices -.uses.-> BBCommon
+    MessageAppServices -.uses.-> BBCommon
+    AdminAppServices -.uses.-> BBDependencyInjection
+    CustomerAppServices -.uses.-> BBDependencyInjection
+    MessageAppServices -.uses.-> BBDependencyInjection
+    AdminEntities -.inherits.-> BBDomain
+    CustomerEntities -.inherits.-> BBDomain
+    MessageEntities -.inherits.-> BBDomain
+    AdminPersistence -.uses.-> BBPersistence
+    CustomerPersistence -.uses.-> BBPersistence
+    MessagePersistence -.uses.-> BBPersistence
+    AdminSecurity -.uses.-> BBSecurity
+    CustomerSecurity -.uses.-> BBSecurity
+    MessageControllers -.uses.-> BBSecurity
+    AdminSecurity -.uses.-> BBCaching
+    CustomerSecurity -.uses.-> BBCaching
+    AdminSecurity -.uses.-> BBLocking
+    CustomerSecurity -.uses.-> BBLocking
+    AdminMessaging -.uses.-> BBMessaging
+    MessageMessaging -.uses.-> BBMessaging
+    AdminHttpClient -.uses.-> BBCommonHttp
+    CustomerHttpClient -.uses.-> BBCommonHttp
+    RecipientDirectory -.uses.-> BBCommonHttp
+    AdminPersistence -.uses.-> BBCurrentUser
+    CustomerPersistence -.uses.-> BBCurrentUser
+    MessagePersistence -.uses.-> BBCurrentUser
+    AdminControllers -.uses.-> BBLogging
+    CustomerControllers -.uses.-> BBLogging
+    MessageControllers -.uses.-> BBLogging
+
+    subgraph Tests["tests 测试覆盖"]
+        BackendTests["后端 xUnit<br/>BuildingBlocks 基础模块测试<br/>AdminIdentityService Application / Controller / MessageCenter 集成边界测试<br/>CustomerAccountService Application / Controller 测试<br/>MessageCenterService Application / Controller / Consumer / HTTP RecipientDirectory 测试"]:::test
+        FrontendTests["前端 Vitest<br/>admin-web: router guards / stores / api / models / composables<br/>customer-miniapp: type-check"]:::test
+    end
+
+    BackendTests -.verifies.-> Shared
+    BackendTests -.verifies.-> AdminSvc
+    BackendTests -.verifies.-> CustomerSvc
+    BackendTests -.verifies.-> MessageSvc
+    FrontendTests -.verifies.-> AdminWeb
+    FrontendTests -.verifies.-> CustomerMiniapp
