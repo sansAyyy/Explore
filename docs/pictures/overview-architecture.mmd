@@ -1,0 +1,80 @@
+%% Explore overview architecture
+%% Compact diagram for README first screen.
+flowchart LR
+    classDef user fill:#f8fafc,stroke:#64748b,color:#0f172a,stroke-width:1px
+    classDef app fill:#eff6ff,stroke:#2563eb,color:#172554,stroke-width:1px
+    classDef gateway fill:#eef2ff,stroke:#4f46e5,color:#312e81,stroke-width:1px
+    classDef service fill:#ecfdf5,stroke:#059669,color:#064e3b,stroke-width:1px
+    classDef infra fill:#fff7ed,stroke:#ea580c,color:#7c2d12,stroke-width:1px
+    classDef shared fill:#f1f5f9,stroke:#475569,color:#0f172a,stroke-width:1px
+
+    subgraph Users["用户入口"]
+        AdminUser["管理员 / 运营"]:::user
+        CustomerUser["客户用户"]:::user
+    end
+
+    subgraph Apps["前端应用 apps"]
+        AdminWeb["admin-web<br/>Vue 3 / Vite / Pinia / Element Plus<br/>后台登录 RBAC 管理功能"]:::app
+        CustomerMiniapp["customer-miniapp<br/>uni-app / Vue 3<br/>H5 / 小程序 客户账户功能"]:::app
+    end
+
+    subgraph Edge["可选部署入口"]
+        Caddy["Caddy Edge Proxy<br/>HTTPS 域名转发"]:::infra
+    end
+
+    subgraph ApiGateway["统一 API 入口"]
+        Gateway["Explore.Gateway.Api<br/>YARP / JWT / CORS / Correlation<br/>/admin-identity /customer-account /message-center"]:::gateway
+    end
+
+    subgraph Services["业务服务 src/Services"]
+        AdminIdentity["AdminIdentityService<br/>管理员认证 授权 RBAC<br/>站内信事件 Outbox"]:::service
+        CustomerAccount["CustomerAccountService<br/>客户账户 手机号登录<br/>资料与通知收件人信息"]:::service
+        MessageCenter["MessageCenterService<br/>消息模板 通知投递<br/>站内信 Inbox"]:::service
+    end
+
+    subgraph Runtime["数据与中间件"]
+        Postgres["PostgreSQL<br/>3 个服务独立数据库"]:::infra
+        Redis["Redis<br/>缓存 验证码 分布式锁"]:::infra
+        RabbitMQ["RabbitMQ<br/>异步通知消息"]:::infra
+    end
+
+    subgraph Foundation["共享基础模块"]
+        BuildingBlocks["BuildingBlocks<br/>Common Security Persistence Messaging<br/>Correlation CurrentUser Logging OpenAPI DI"]:::shared
+        Contracts["Contracts<br/>SendNotificationByTemplateMessage"]:::shared
+        Docker["docker compose<br/>full stack / infra only"]:::shared
+    end
+
+    AdminUser --> AdminWeb
+    CustomerUser --> CustomerMiniapp
+    AdminWeb -->|VITE_GATEWAY_BASE_URL| Gateway
+    CustomerMiniapp -->|VITE_GATEWAY_BASE_URL| Gateway
+    Caddy -.domain mode.-> AdminWeb
+    Caddy -.domain mode.-> CustomerMiniapp
+    Caddy -->|api.example.com| Gateway
+
+    Gateway -->|/admin-identity/**| AdminIdentity
+    Gateway -->|/customer-account/**| CustomerAccount
+    Gateway -->|/message-center/**| MessageCenter
+
+    AdminIdentity -->|HTTP: 短信验证码| MessageCenter
+    CustomerAccount -->|HTTP: 通知发送| MessageCenter
+    AdminIdentity -->|Outbox publish| RabbitMQ
+    RabbitMQ -->|SendNotificationByTemplateMessage| MessageCenter
+    MessageCenter -.Recipient Directory HTTP.-> CustomerAccount
+
+    AdminIdentity --> Postgres
+    CustomerAccount --> Postgres
+    MessageCenter --> Postgres
+    AdminIdentity --> Redis
+    CustomerAccount --> Redis
+
+    BuildingBlocks -.used by.-> Gateway
+    BuildingBlocks -.used by.-> AdminIdentity
+    BuildingBlocks -.used by.-> CustomerAccount
+    BuildingBlocks -.used by.-> MessageCenter
+    Contracts -.message contract.-> AdminIdentity
+    Contracts -.message contract.-> MessageCenter
+    Docker -.runs.-> Caddy
+    Docker -.runs.-> Gateway
+    Docker -.runs.-> Services
+    Docker -.starts.-> Runtime

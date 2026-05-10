@@ -189,13 +189,23 @@ public sealed class AdminRoleAppService : IAdminRoleAppService, IScopeDependency
             }
         }
 
+        var requestedPermissionIds = distinctPermissionIds.ToHashSet();
         var existingAssignments = await _rolePermissionCommandRepository.GetByRoleIdAsync(roleId, cancellationToken);
-        if (existingAssignments.Count > 0)
+        var existingPermissionIds = existingAssignments
+            .Select(x => x.AdminPermissionId)
+            .ToHashSet();
+
+        var assignmentsToRemove = existingAssignments
+            .Where(x => !requestedPermissionIds.Contains(x.AdminPermissionId))
+            .ToArray();
+
+        if (assignmentsToRemove.Length > 0)
         {
-            _rolePermissionCommandRepository.RemoveRange(existingAssignments);
+            _rolePermissionCommandRepository.RemoveRange(assignmentsToRemove);
         }
 
         var newAssignments = distinctPermissionIds
+            .Where(permissionId => !existingPermissionIds.Contains(permissionId))
             .Select(permissionId => AdminRolePermission.Create(Guid.NewGuid(), roleId, permissionId))
             .ToArray();
 
