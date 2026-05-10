@@ -2,7 +2,7 @@
 
 ## 项目架构图
 
-![Explore 项目架构图](docs/pictures/explore-system-architecture-detailed-2026-05-02-v2.png)
+![Explore 项目架构图](docs/pictures/readme-modern-architecture.svg)
 
 Explore 是一个前后端一体的多应用仓库，包含管理端、客户小程序、API Gateway、多个后端服务以及一组可复用的 `BuildingBlocks` 基础模块。文档目标不是把所有细节堆在根目录，而是让新加入的开发者先理解系统组成，再快速跳到对应子系统文档继续深入。
 
